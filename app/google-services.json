@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1095237905365",
+    "firebase_url": "https://w4weekend.firebaseio.com",
+    "project_id": "w4weekend",
+    "storage_bucket": "w4weekend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095237905365:android:a8211e066c13c406f7eb5c",
+        "android_client_info": {
+          "package_name": "com.example.w4weekend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095237905365-ddtauh7iatj65quun86jt2meqvjj2u1g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.w4weekend",
+            "certificate_hash": "fc01e0b2a846dfc099efa3876a0a2e9f471605c3"
+          }
+        },
+        {
+          "client_id": "1095237905365-kaj0b0205m7s69d5r76mfna440fpor46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuqd1ro_F3oriwEh732ipqiXdloTB65ao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095237905365-kaj0b0205m7s69d5r76mfna440fpor46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
