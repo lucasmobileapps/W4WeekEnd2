@@ -33,7 +33,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         return root
     }
-
+//test pull
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
