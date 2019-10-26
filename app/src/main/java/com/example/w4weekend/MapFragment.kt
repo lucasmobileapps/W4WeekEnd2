@@ -1,7 +1,11 @@
 package com.example.w4weekend
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
 
@@ -12,7 +16,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 
 class MapFragment : Fragment(), OnMapReadyCallback {
-
     private lateinit var map: GoogleMap
     private val REQUEST_LOCATION_PERMISSION = 1
     override fun onCreateView(
@@ -26,13 +29,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         //val fragment= root.fin   .findFragmentById(R.id.map)
         //val mapFragment = fragment as SupportMapFragment
 
-        val mapFragment = root.findViewById<SupportMapFragment>(R.id.map)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         return root
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
+        map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         val latitude = 33.912670
         val longitude = -84.570353
@@ -43,6 +48,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         setMapLongClick(map)
         setPoiClick(map)
+        enableMyLocation()
 
         val overlaySize = 100f
         val androidOverlay = GroundOverlayOptions()
@@ -50,6 +56,37 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .position(homeLatLng, overlaySize)
         map.addGroundOverlay(androidOverlay)
     }
+
+    private fun enableMyLocation() {
+        if (isPermissionGranted()){
+            map.setMyLocationEnabled(true)
+        }
+        else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.size > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED))
+                enableMyLocation()
+        }
+    }
+
+    private fun isPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this.context!!,
+            Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
+    }
+
 /*
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflate = menuInflater
@@ -78,9 +115,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
  */
-
-
-
     private fun setMapLongClick(map:GoogleMap){
         map.setOnMapLongClickListener { latLng ->
             val snippet = String.format(
