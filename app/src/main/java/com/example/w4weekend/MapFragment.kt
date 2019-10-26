@@ -33,7 +33,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         return root
     }
-//test pull
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
@@ -87,11 +87,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
     }
 
-/*
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflate = menuInflater
-        inflate.inflate(R.menu.map_options, menu)
-        return true
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.map_options, menu)
+
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -114,7 +114,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         else -> super.onOptionsItemSelected(item)
     }
 
- */
+
     private fun setMapLongClick(map:GoogleMap){
         map.setOnMapLongClickListener { latLng ->
             val snippet = String.format(
