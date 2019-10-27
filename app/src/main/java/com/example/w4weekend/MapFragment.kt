@@ -3,10 +3,14 @@ package com.example.w4weekend
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.room.Room
+import com.example.w4weekend.database.FavoriteDatabase
+import com.example.w4weekend.database.FavoriteEntity
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -18,12 +22,24 @@ import java.util.*
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private val REQUEST_LOCATION_PERMISSION = 1
+    private lateinit var myDAO: FavoriteDatabase
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
+
+        myDAO = Room.databaseBuilder(
+            requireContext(),
+            FavoriteDatabase::class.java,
+            "favorite.db")
+            .allowMainThreadQueries()
+            .fallbackToDestructiveMigration()
+            .build()
+
         val root = inflater.inflate(R.layout.fragment_map, container, false)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //val fragment= root.fin   .findFragmentById(R.id.map)
@@ -55,6 +71,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .image(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
             .position(homeLatLng, overlaySize)
         map.addGroundOverlay(androidOverlay)
+
+        val favoriteList = myDAO.favoriteDao().getAllPersons()
+        Log.d("LOG_X", favoriteList.toString())
+        val latLng = "lat/lng: (${favoriteList[0].},${})"
+        /*
+        for (i in favoriteList.indices){
+            map.addMarker(
+                MarkerOptions()
+                    .title("Dropped Pin")
+                    .snippet(favoriteList[i].toString())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+            )
+
+         */
+
+        }
     }
 
     private fun enableMyLocation() {
@@ -123,6 +155,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 latLng.latitude,
                 latLng.longitude
             )
+            val newPerson = FavoriteEntity(latLng.latitude, latLng.longitude)
+            myDAO.favoriteDao().insertNewFavorite(newPerson)
+
+            Log.d("LOG_X", myDAO.favoriteDao().getAllPersons().toString())
 
             map.addMarker(
                 MarkerOptions()
@@ -131,6 +167,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             )
+            Log.d("LOG_X", latLng.toString())
 
         }
     }
