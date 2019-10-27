@@ -41,10 +41,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .build()
 
         val root = inflater.inflate(R.layout.fragment_map, container, false)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //val fragment= root.fin   .findFragmentById(R.id.map)
-        //val mapFragment = fragment as SupportMapFragment
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         return root
@@ -74,18 +70,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         val favoriteList = myDAO.favoriteDao().getAllPersons()
         Log.d("LOG_X", favoriteList.toString())
-        val latLng = "lat/lng: (${favoriteList[0].},${})"
-        /*
+
         for (i in favoriteList.indices){
             map.addMarker(
                 MarkerOptions()
-                    .title("Dropped Pin")
+                    .position(LatLng(favoriteList[i].favoriteLatitude, favoriteList[i].favoriteLongitude))
+                    .title(favoriteList[i].favoriteName)
                     .snippet(favoriteList[i].toString())
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
             )
-
-         */
-
         }
     }
 
@@ -155,7 +148,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 latLng.latitude,
                 latLng.longitude
             )
-            val newPerson = FavoriteEntity(latLng.latitude, latLng.longitude)
+            val newPerson = FavoriteEntity(latLng.latitude, latLng.longitude, "Dropped Pin")
             myDAO.favoriteDao().insertNewFavorite(newPerson)
 
             Log.d("LOG_X", myDAO.favoriteDao().getAllPersons().toString())
