@@ -8,9 +8,11 @@ import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.example.w4weekend.database.FavoriteDatabase
 import com.example.w4weekend.database.FavoriteEntity
+import com.example.w4weekend.viewmodel.FavoriteEntityViewModel
 import com.google.android.gms.maps.*
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -22,7 +24,10 @@ import java.util.*
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private val REQUEST_LOCATION_PERMISSION = 1
-    private lateinit var myDAO: FavoriteDatabase
+    val viewModel: FavoriteEntityViewModel by lazy {
+        ViewModelProvider(requireActivity(),ViewModelProvider.AndroidViewModelFactory(requireActivity().application)).get(FavoriteEntityViewModel::class.java)
+
+    }
 
 
     override fun onCreateView(
@@ -31,14 +36,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
-
-        myDAO = Room.databaseBuilder(
-            requireContext(),
-            FavoriteDatabase::class.java,
-            "favorite.db")
-            .allowMainThreadQueries()
-            .fallbackToDestructiveMigration()
-            .build()
 
         val root = inflater.inflate(R.layout.fragment_map, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -68,7 +65,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .position(homeLatLng, overlaySize)
         map.addGroundOverlay(androidOverlay)
 
-        val favoriteList = myDAO.favoriteDao().getAllPersons()
+        val favoriteList = viewModel.getPlaces()
         Log.d("LOG_X", favoriteList.toString())
 
         for (i in favoriteList.indices){
@@ -149,9 +146,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 latLng.longitude
             )
             val newPerson = FavoriteEntity(latLng.latitude, latLng.longitude, "Dropped Pin")
-            myDAO.favoriteDao().insertNewFavorite(newPerson)
-
-            Log.d("LOG_X", myDAO.favoriteDao().getAllPersons().toString())
+            viewModel.addPlace(newPerson)
 
             map.addMarker(
                 MarkerOptions()
