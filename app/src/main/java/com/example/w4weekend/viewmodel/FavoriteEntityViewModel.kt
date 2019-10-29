@@ -25,5 +25,4 @@ class FavoriteEntityViewModel(app: Application) : AndroidViewModel (app){
     fun clearAllPlaces(){
         favoriteDatabase.favoriteDao().deleteAllPersons()
     }
-
 }

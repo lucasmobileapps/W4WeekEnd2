@@ -39,6 +39,12 @@ class FavoriteFragment : Fragment(), FavoriteAdapter.FavoriteAdapterDelegate{
 
         setUpRecyclerView()
         (favorite_recyclerview.adapter as FavoriteAdapter).submitList(viewModel.getPlaces())
+        clear_favorite_button.setOnClickListener {
+            viewModel.clearAllPlaces()
+            (favorite_recyclerview.adapter as FavoriteAdapter).submitList(viewModel.getPlaces())
+
+        }
+
     }
 
     override fun favoriteSelect(favorite: FavoriteEntity) {
